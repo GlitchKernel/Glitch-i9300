@@ -20,8 +20,10 @@
 
 #define MALI_DVFS_STEPS 10
 
-/* @Enable or Disable the CPU frequency lock when the GPU clock is 440 Mhz */
-#define CPUFREQ_LOCK_DURING_440 0
+#if !USING_MALI_PMM
+/* @brief System power up/down cores that can be passed into mali_platform_powerdown/up() */
+#define MALI_PLATFORM_SYSTEM  0
+#endif
 
 #ifdef __cplusplus
 extern "C" {
