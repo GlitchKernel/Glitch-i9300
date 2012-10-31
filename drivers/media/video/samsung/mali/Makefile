@@ -314,7 +314,6 @@ mali-y += \
 	linux/mali_slp_global_lock.o
 endif
 
-
 ifeq ($(PANIC_ON_WATCHDOG_TIMEOUT),1)
 	EXTRA_CFLAGS += -DUSING_KERNEL_PANIC
 endif
