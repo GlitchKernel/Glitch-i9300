@@ -45,8 +45,8 @@ typedef struct mali_dvfs_tableTag{
 }mali_dvfs_table;
 
 mali_dvfs_table mali_dvfs[MALI_DVFS_STEPS]={
-	{800   ,1000000   , 1200000}, // L0 1.2
-	{733   ,1000000   , 1075000}, // L1 1.175
+	{733   ,1000000   , 1150000}, // L0 1.2
+	{700   ,1000000   , 1075000}, // L1 1.175
 	{640   ,1000000   , 1050000}, // L2 1.125
 	{533   ,1000000   ,  975000}, // L3 1.075
 	{440   ,1000000   ,  925000}, // L4 1.025
@@ -76,7 +76,7 @@ unsigned int upThreshold;
 unsigned int downDifferential;
 
 }mali_policy = {
-	.upThreshold = 90,
+	.upThreshold = 60,
 	.downDifferential = 10,
 };
 
@@ -292,7 +292,7 @@ mali_bool init_mali_dvfs_status(int step)
 	add here with the right function to get initilization value.
 	*/
 	mali_policy.lowStep = findStep(160);
-	mali_policy.highStep = (samsung_rev() >= EXYNOS4412_REV_2_0) ? findStep(533) : findStep(440);
+	mali_policy.highStep = (samsung_rev() >= EXYNOS4412_REV_2_0) ? findStep(700) : findStep(700);
 
 	if (!mali_dvfs_wq)
 		mali_dvfs_wq = create_singlethread_workqueue("mali_dvfs");
