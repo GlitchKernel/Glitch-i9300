@@ -33,6 +33,7 @@ setup ()
         *)
             KERNEL_DIR="$(dirname "$(readlink -f "$0")")"
             CROSS_PREFIX="$CROSS_PREFIX"
+	    INITRAMFS="$KERNEL_DIR/release/build"
             ;;
     esac
 
@@ -73,40 +74,42 @@ formodules=$repo/kernel/samsung/glitch-build/kernel/i9300
 
 echo "creating boot.img"
 
-# Backup as target for ramdisk and recovery
-
-./mkbootimg --kernel $target_dir/arch/arm/boot/zImage --ramdisk $KERNEL_DIR/release/build/ramdisk.img --board smdk4x12 --base 0x10000000 --pagesize 2048 --ramdiskaddr 0x11000000 -o $KERNEL_DIR/release/boot.img
-
-#Not sure if needed with i9300 - commenting
-#$KERNEL_DIR/mkshbootimg.py $KERNEL_DIR/release/boot.img $target_dir/arch/arm/boot/zImage $KERNEL_DIR/release/build/ramdisk.img $KERNEL_DIR/release/build/Glitch.tar
-
-mkdir -p $KERNEL_DIR/release/system/lib/modules/
+mkdir -p $KERNEL_DIR/release/build/lib/modules/
 
 cd $target_dir
 
-find -name '*.ko' -exec cp -av {} $KERNEL_DIR/release/system/lib/modules/ \;
-/opt/toolchains/arm-eabi-4.6/bin/arm-linux-androideabi-strip --strip-unneeded $KERNEL_DIR/release/system/lib/modules/*
+find -name '*.ko' -exec cp -av {} $KERNEL_DIR/release/build/lib/modules/ \;
+/opt/toolchains/arm-eabi-4.6/bin/arm-linux-androideabi-strip --strip-unneeded $KERNEL_DIR/release/build/lib/modules/*
+
+cd $INITRAMFS
+
+find | fakeroot cpio -H newc -o > $INITRAMFS.cpio 2>/dev/null
+ls -lh $INITRAMFS.cpio
+gzip -9 $INITRAMFS.cpio
+
+cd $KERNEL_DIR
+
+./mkbootimg --kernel $target_dir/arch/arm/boot/zImage --ramdisk $INITRAMFS.cpio.gz --board smdk4x12 --base 0x10000000 --pagesize 2048 --ramdiskaddr 0x11000000 -o $KERNEL_DIR/release/boot.img
 
 echo "packaging it up"
 
-cd $KERNEL_DIR/release && {
+cd release && {
 
 mkdir -p $KERNEL_DIR/release/Flashable-i9300
 
 REL=CM10-i9300-Glitch-$(date +%Y%m%d.%H%M).zip
-
-	#rm -r system 2> /dev/null
 	
 	zip -q -r ${REL} system boot.img META-INF
-	#zip -q -r ${REL} boot.img META-INF
 	sha256sum ${REL} > ${REL}.sha256sum
 	mv ${REL}* $KERNEL_DIR/release/Flashable-i9300/
 }
 
-cd $KERNEL_DIR
+cd $KERNEL_DIR/release
 
-rm release/boot.img
-rm -r release/system
+rm boot.img
+rm -r build/lib
+rm -rf build.cpio
+rm -rf build.cpio.gz
 echo ${REL}
 }
     
