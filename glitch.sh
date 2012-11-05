@@ -80,31 +80,25 @@ echo "creating boot.img"
 #Not sure if needed with i9300 - commenting
 #$KERNEL_DIR/mkshbootimg.py $KERNEL_DIR/release/boot.img $target_dir/arch/arm/boot/zImage $KERNEL_DIR/release/build/ramdisk.img $KERNEL_DIR/release/build/Glitch.tar
 
+mkdir -p $KERNEL_DIR/release/system/lib/modules/
+
+cd $target_dir
+
+find -name '*.ko' -exec cp -av {} $KERNEL_DIR/release/system/lib/modules/ \;
+/opt/toolchains/arm-eabi-4.6/bin/arm-linux-androideabi-strip --strip-unneeded $KERNEL_DIR/release/system/lib/modules/*
+
 echo "packaging it up"
 
-cd release && {
+cd $KERNEL_DIR/release && {
 
 mkdir -p $KERNEL_DIR/release/Flashable-i9300
 
 REL=CM10-i9300-Glitch-$(date +%Y%m%d.%H%M).zip
 
-	rm -r system 2> /dev/null
-	mkdir  -p system/lib/modules
-
-
-	# Copying modules
-	cp $formodules/net/dns_resolver/dns_resolver.ko system/lib/modules/dns_resolver.ko
-	cp $formodules/fs/cifs/cifs.ko system/lib/modules/cifs.ko
-	cp $formodules/drivers/scsi/scsi_wait_scan.ko system/lib/modules/scsi_wait_scan.ko
-	cp $formodules/drivers/net/wireless/btlock/btlock.ko system/lib/modules/btlock.ko
-	cp $formodules/drivers/net/wireless/bcmdhd/dhd.ko system/lib/modules/dhd.ko
-	cp $formodules/crypto/md4.ko system/lib/modules/md4.ko
-	cp $formodules/arch/arm/mvp/pvtcpkm/pvtcpkm.ko system/lib/modules/pvtcpkm.ko
-	cp $formodules/arch/arm/mvp/mvpkm/mvpkm.ko system/lib/modules/mvpkm.ko
-	cp $formodules/arch/arm/mvp/commkm/commkm.ko system/lib/modules/commkm.ko
+	#rm -r system 2> /dev/null
 	
-	#zip -q -r ${REL} system boot.img META-INF (problem with modules atm)
-	zip -q -r ${REL} boot.img META-INF
+	zip -q -r ${REL} system boot.img META-INF
+	#zip -q -r ${REL} boot.img META-INF
 	sha256sum ${REL} > ${REL}.sha256sum
 	mv ${REL}* $KERNEL_DIR/release/Flashable-i9300/
 }
@@ -112,7 +106,7 @@ REL=CM10-i9300-Glitch-$(date +%Y%m%d.%H%M).zip
 cd $KERNEL_DIR
 
 rm release/boot.img
-rm release/system/lib/modules/*
+rm -r release/system
 echo ${REL}
 }
     
