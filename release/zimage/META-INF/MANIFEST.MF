@@ -1,0 +1,51 @@
+Manifest-Version: 1.0
+Created-By: 1.0 (Android SignApk)
+
+Name: system/lib/modules/pvtcpkm.ko
+SHA1-Digest: DqEZPwnA0ujYv1kY2bbqStWfK8Y=
+
+Name: kernel/dump_image
+SHA1-Digest: y9AsDp+Zz8vtns5fT5RNgiV12HQ=
+
+Name: system/lib/modules/scsi_wait_scan.ko
+SHA1-Digest: ihShp/zkZv6sgE54+XJCPoRyacA=
+
+Name: kernel/mkbootimg.sh
+SHA1-Digest: FSJOPIWWsenAEIoM34ZeoL1goK8=
+
+Name: kernel/unpackbootimg
+SHA1-Digest: 5BrVc0R+K2+ndHL8KhkDgvEonko=
+
+Name: system/lib/modules/commkm.ko
+SHA1-Digest: xUDqeJfEAqNAQYTDJoF+Dj4GbvA=
+
+Name: META-INF/com/google/android/update-binary
+SHA1-Digest: 2flB2PR6C3cEatWeoSkeu3e2wuQ=
+
+Name: system/lib/modules/dns_resolver.ko
+SHA1-Digest: 6y0xAzcQYQiGzfiwNshkjEl6BbY=
+
+Name: system/lib/modules/cifs.ko
+SHA1-Digest: saLzV+QkeRJyUZbT9YsQzFfEji4=
+
+Name: system/lib/modules/btlock.ko
+SHA1-Digest: No05QhXC+2rEZ966A6FX7f9SNSM=
+
+Name: META-INF/com/google/android/updater-script
+SHA1-Digest: haUkREGM/ol5zEkxgYzVmKLj4hA=
+
+Name: kernel/mkbootimg
+SHA1-Digest: ZCuEoNxF3Fv6BdTK0TcVEfxAs/Y=
+
+Name: kernel/zImage
+SHA1-Digest: 92iP2/qW1u26Rn9J8fb4TK6WS8s=
+
+Name: system/lib/modules/md4.ko
+SHA1-Digest: tY2tvQ6DOCLG8msEUMjXHLmh/j0=
+
+Name: system/lib/modules/dhd.ko
+SHA1-Digest: S1hlm9OOzloHQOJkdXm2faYsm9o=
+
+Name: system/lib/modules/mvpkm.ko
+SHA1-Digest: zXB9PaLusRHizN0Oedq9/QijqCg=
+
