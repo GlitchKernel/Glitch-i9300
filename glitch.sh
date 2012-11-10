@@ -74,7 +74,7 @@ mkdir -p $KERNEL_DIR/release/bootimg/system/lib/modules/
 cd $target_dir
 
 find -name '*.ko' -exec cp -av {} $KERNEL_DIR/release/bootimg/system/lib/modules/ \;
-/opt/toolchains/arm-eabi-4.6/bin/arm-linux-androideabi-strip --strip-unneeded $KERNEL_DIR/release/bootimg/system/lib/modules/*
+"$CROSS_PREFIX"strip --strip-unneeded $KERNEL_DIR/release/bootimg/system/lib/modules/*
 
 INITRAMFS="$KERNEL_DIR/release/bootimg/build"
 
