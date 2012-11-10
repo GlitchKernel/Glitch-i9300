@@ -12,10 +12,8 @@ repo=~/android/system
 
 export CM10_REPO=$repo
 
-CCACHE=ccache
-
-export CROSS_PREFIX="/opt/toolchains/arm-eabi-4.6/bin/arm-linux-androideabi-"
-export CROSS_PREFIX443="~/android/system/prebuilt/linux-x86/toolchain/arm-eabi-4.4.3/bin/arm-eabi-"
+# Toolchain :
+export CROSS_PREFIX="$repo/prebuilts/gcc/linux-x86/arm/arm-eabi-4.6/bin/arm-eabi-"
 
 setup ()
 {
@@ -29,7 +27,7 @@ setup ()
     case `uname -s` in
         Darwin)
             KERNEL_DIR="$(dirname "$(greadlink -f "$0")")"
-            CROSS_PREFIX="$ANDROID_BUILD_TOP/prebuilt/darwin-x86/toolchain/arm-eabi-4.4.3/bin/arm-eabi-"
+            CROSS_PREFIX="$repo/prebuilts/gcc/darwin-x86/arm/arm-eabi-4.6/bin/arm-eabi-"
             ;;
         *)
             KERNEL_DIR="$(dirname "$(readlink -f "$0")")"
@@ -62,7 +60,7 @@ build ()
     mkdir -p "$target_dir"
 
     mka -C "$KERNEL_DIR" O="$target_dir" cyanogenmod_i9300_defconfig HOSTCC="$CCACHE gcc"
-    mka -C "$KERNEL_DIR" O="$target_dir" HOSTCC="$CCACHE gcc" CROSS_COMPILE="$CROSS_PREFIX" zImage modules
+    mka -C "$KERNEL_DIR" O="$target_dir" HOSTCC="$CCACHE gcc" CROSS_COMPILE="$CCACHE $CROSS_PREFIX" zImage modules
 
 [[ -d release ]] || {
 	echo "must be in kernel root dir"
@@ -76,7 +74,7 @@ mkdir -p $KERNEL_DIR/release/bootimg/system/lib/modules/
 cd $target_dir
 
 find -name '*.ko' -exec cp -av {} $KERNEL_DIR/release/bootimg/system/lib/modules/ \;
-#/opt/toolchains/arm-eabi-4.6/bin/arm-linux-androideabi-strip --strip-unneeded $KERNEL_DIR/release/bootimg/system/lib/modules/*
+/opt/toolchains/arm-eabi-4.6/bin/arm-linux-androideabi-strip --strip-unneeded $KERNEL_DIR/release/bootimg/system/lib/modules/*
 
 INITRAMFS="$KERNEL_DIR/release/bootimg/build"
 
@@ -97,11 +95,8 @@ cd release/bootimg && {
 mkdir -p $KERNEL_DIR/release/Flashable-i9300
 
 REL=CM10-i9300-Glitch-$(date +%Y%m%d.%H%M).zip
-	
-	#modules still not working
-	#zip -q -r ${REL} system boot.img META-INF
 
-	zip -q -r ${REL} boot.img META-INF
+	zip -q -r ${REL} system boot.img META-INF
 	sha256sum ${REL} > ${REL}.sha256sum
 	mv ${REL}* $KERNEL_DIR/release/Flashable-i9300/
 
