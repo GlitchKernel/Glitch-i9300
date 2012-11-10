@@ -89,7 +89,7 @@ mkdir -p $KERNEL_DIR/release/Flashable-i9300
 REL=CM10-i9300-Glitch-$(date +%Y%m%d.%H%M).zip
 	
 	zip -q -r ${REL} kernel META-INF system
-	#sha256sum ${REL} > ${REL}.sha256sum
+	sha256sum ${REL} > ${REL}.sha256sum
 	mv ${REL}* $KERNEL_DIR/release/Flashable-i9300/
 
 rm kernel/zImage
