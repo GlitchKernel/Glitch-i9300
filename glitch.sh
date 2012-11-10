@@ -80,13 +80,13 @@ INITRAMFS="$KERNEL_DIR/release/bootimg/build"
 
 cd $INITRAMFS
 
-find | fakeroot cpio -H newc -o > init.cpio 2>/dev/null
-ls -lh init.cpio
-gzip -9 init.cpio
+find | fakeroot cpio -H newc -o > ../init.cpio 2>/dev/null
+ls -lh ../init.cpio
+gzip -9 ../init.cpio
 
 cd $KERNEL_DIR
 
-./mkbootimg --kernel $target_dir/arch/arm/boot/zImage --ramdisk release/bootimg/build/init.cpio.gz --board smdk4x12 --base 0x10000000 --pagesize 2048 --ramdiskaddr 0x11000000 -o $KERNEL_DIR/release/bootimg/boot.img
+./mkbootimg --kernel $target_dir/arch/arm/boot/zImage --ramdisk release/bootimg/init.cpio.gz --board smdk4x12 --base 0x10000000 --pagesize 2048 --ramdiskaddr 0x11000000 -o $KERNEL_DIR/release/bootimg/boot.img
 
 echo "packaging it up"
 
@@ -102,7 +102,7 @@ REL=CM10-i9300-Glitch-$(date +%Y%m%d.%H%M).zip
 
 rm boot.img
 rm -r system
-rm build/init.cpio.gz
+rm init.cpio.gz
 }
 
 cd $KERNEL_DIR
