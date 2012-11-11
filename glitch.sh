@@ -70,6 +70,7 @@ build ()
 echo "creating boot.img"
 
 mkdir -p $KERNEL_DIR/release/bootimg/system/lib/modules/
+mkdir -p $KERNEL_DIR/release/bootimg/ramdisk/
 
 cd $target_dir
 
@@ -77,16 +78,22 @@ find -name '*.ko' -exec cp -av {} $KERNEL_DIR/release/bootimg/system/lib/modules
 "$CROSS_PREFIX"strip --strip-unneeded $KERNEL_DIR/release/bootimg/system/lib/modules/*
 
 INITRAMFS="$KERNEL_DIR/release/bootimg/build"
+BUILDRAMFS="$KERNEL_DIR/release/bootimg/ramdisk"
 
-cd $INITRAMFS
+cp -ax $INITRAMFS $BUILDRAMFS
 
-find | fakeroot cpio -H newc -o > ../init.cpio 2>/dev/null
-ls -lh ../init.cpio
-gzip -9 ../init.cpio
+find $BUILDRAMFS -name EMPTY_DIRECTORY -exec rm -rf {} \;
+rm -rf $BUILDRAMFS/tmp/*
+
+cd $BUILDRAMFS/build
+
+find | fakeroot cpio -H newc -o > ../ramdisk.cpio 2>/dev/null
+ls -lh ../ramdisk.cpio
+gzip -9 ../ramdisk.cpio
 
 cd $KERNEL_DIR
 
-./mkbootimg --kernel $target_dir/arch/arm/boot/zImage --ramdisk release/bootimg/init.cpio.gz --board smdk4x12 --base 0x10000000 --pagesize 2048 --ramdiskaddr 0x11000000 -o $KERNEL_DIR/release/bootimg/boot.img
+./mkbootimg --kernel $target_dir/arch/arm/boot/zImage --ramdisk release/bootimg/ramdisk/ramdisk.cpio.gz --board smdk4x12 --base 0x10000000 --pagesize 2048 -o $KERNEL_DIR/release/bootimg/boot.img
 
 echo "packaging it up"
 
@@ -102,7 +109,7 @@ REL=CM10-i9300-Glitch-$(date +%Y%m%d.%H%M).zip
 
 rm boot.img
 rm -r system
-rm init.cpio.gz
+rm -r ramdisk
 }
 
 cd $KERNEL_DIR
