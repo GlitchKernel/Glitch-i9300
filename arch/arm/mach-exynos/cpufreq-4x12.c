@@ -49,7 +49,7 @@ struct cpufreq_clkdiv {
 unsigned int exynos4x12_volt_table[CPUFREQ_LEVEL_END];
 
 static struct cpufreq_frequency_table exynos4x12_freq_table[] = {
-	{L0, 1800*1000},
+	{L0, 1744*1000},
 	{L1, 1700*1000},
 	{L2, 1600*1000},
 	{L3, 1500*1000},
@@ -291,7 +291,7 @@ static unsigned int clkdiv_cpu1_4412[CPUFREQ_LEVEL_END][3] = {
 
 static unsigned int exynos4x12_apll_pms_table[CPUFREQ_LEVEL_END] = {
 	/* APLL FOUT L2: 1800MHz */
-	((225<<16)|(3<<8)|(0x0)),
+	((218<<16)|(3<<8)|(0x0)),
 
 	/* APLL FOUT L3: 1704MHz */
 	((213<<16)|(3<<8)|(0x0)),
