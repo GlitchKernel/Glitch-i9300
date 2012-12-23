@@ -43,6 +43,11 @@
 #if defined(CONFIG_CHARGER_MAX8922_U1)
 #include <linux/power/max8922_charger_u1.h>
 #endif
+
+#ifdef CONFIG_BT_BCM4334
+#include <mach/board-bluetooth-bcm.h>
+#endif
+
 #ifdef CONFIG_STMPE811_ADC
 #include <linux/stmpe811-adc.h>
 #endif
@@ -53,6 +58,7 @@
 
 #ifdef CONFIG_DMA_CMA
 #include <linux/dma-contiguous.h>
+#include <linux/exynos_mem.h>
 #endif
 
 #include <asm/mach/arch.h>
@@ -188,6 +194,9 @@ static struct s3c2410_uartcfg smdk4212_uartcfgs[] __initdata = {
 		.ucon		= SMDK4212_UCON_DEFAULT,
 		.ulcon		= SMDK4212_ULCON_DEFAULT,
 		.ufcon		= SMDK4212_UFCON_DEFAULT,
+#ifdef CONFIG_BT_BCM4334
+		.wake_peer = bcm_bt_lpm_exit_lpm_locked,
+#endif
 	},
 	[1] = {
 		.hwport		= 1,
@@ -3415,11 +3424,14 @@ static void __init exynos4_reserve(void)
 		CONFIG_VIDEO_SAMSUNG_MEMSIZE_FIMC1 * SZ_1K, 0x65800000, 0);
 	if (ret != 0)
 		panic("alloc failed for FIMC1\n");
+	cma_region_descriptor_add(s3c_device_fimc1.name, 0x65800000,
+				  CONFIG_VIDEO_SAMSUNG_MEMSIZE_FIMC1 * SZ_1K);
 #endif
 
 #if defined(CONFIG_USE_MFC_CMA) && defined(CONFIG_MACH_M0)
 	ret = dma_declare_contiguous(&s5p_device_mfc.dev,
 			0x02800000, 0x5C800000, 0);
+	cma_region_descriptor_add(s5p_device_mfc.name, 0x5C800000, 0x02800000);
 #endif
 	if (ret != 0)
 		printk(KERN_ERR "%s Fail\n", __func__);
