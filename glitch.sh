@@ -3,6 +3,10 @@
 # CM10 repo path :
 repo=~/android/system
 
+# Choose Android 4.1.x or 4.2.x initrd :
+initrd="4.1"
+#initrd="4.2"
+
 # Glitch kernel build-script parameters :
 #
 # "device" : build for a supported device (i9300).
@@ -10,6 +14,7 @@ repo=~/android/system
 #
 # clean : clean the build directory.
 
+export init=$initrd
 export CM10_REPO=$repo
 
 # Toolchain :
@@ -69,16 +74,16 @@ build ()
 
 echo "creating boot.img"
 
-mkdir -p $KERNEL_DIR/release/bootimg/system/lib/modules/
-mkdir -p $KERNEL_DIR/release/bootimg/ramdisk/
+mkdir -p $KERNEL_DIR/release/bootimg$init/system/lib/modules/
+mkdir -p $KERNEL_DIR/release/bootimg$init/ramdisk/
 
 cd $target_dir
 
-find -name '*.ko' -exec cp -av {} $KERNEL_DIR/release/bootimg/system/lib/modules/ \;
-"$CROSS_PREFIX"strip --strip-unneeded $KERNEL_DIR/release/bootimg/system/lib/modules/*
+find -name '*.ko' -exec cp -av {} $KERNEL_DIR/release/bootimg$init/system/lib/modules/ \;
+"$CROSS_PREFIX"strip --strip-unneeded $KERNEL_DIR/release/bootimg$init/system/lib/modules/*
 
-INITRAMFS="$KERNEL_DIR/release/bootimg/build"
-BUILDRAMFS="$KERNEL_DIR/release/bootimg/ramdisk"
+INITRAMFS="$KERNEL_DIR/release/bootimg$init/build"
+BUILDRAMFS="$KERNEL_DIR/release/bootimg$init/ramdisk"
 
 cp -ax $INITRAMFS $BUILDRAMFS
 
@@ -93,11 +98,11 @@ gzip -9 ../ramdisk.cpio
 
 cd $KERNEL_DIR
 
-./mkbootimg --kernel $target_dir/arch/arm/boot/zImage --ramdisk release/bootimg/ramdisk/ramdisk.cpio.gz --board smdk4x12 --base 0x10000000 --pagesize 2048 -o $KERNEL_DIR/release/bootimg/boot.img
+./mkbootimg --kernel $target_dir/arch/arm/boot/zImage --ramdisk release/bootimg$init/ramdisk/ramdisk.cpio.gz --board smdk4x12 --base 0x10000000 --pagesize 2048 -o $KERNEL_DIR/release/bootimg$init/boot.img
 
 echo "packaging it up"
 
-cd release/bootimg && {
+cd release/bootimg$init && {
 
 mkdir -p $KERNEL_DIR/release/Flashable-i9300
 
