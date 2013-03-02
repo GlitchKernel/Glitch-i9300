@@ -45,6 +45,11 @@ static int mali_runtime_suspend(struct device *dev);
 static int mali_runtime_resume(struct device *dev);
 #endif
 
+#ifdef CONFIG_GPU_CLOCK_CONTROL
+#include <../common/gpu_clock_control.h>
+#include <../common/gpu_voltage_control.h>
+#endif
+
 #if (LINUX_VERSION_CODE < KERNEL_VERSION(2,6,29))
 static int mali_os_suspend(struct platform_device *pdev, pm_message_t state);
 static int mali_os_resume(struct platform_device *pdev);
@@ -232,6 +237,11 @@ int _mali_dev_platform_register(void)
 	{
 		return err;
 	}
+#endif
+
+#ifdef CONFIG_GPU_CLOCK_CONTROL
+  gpu_clock_control_start();
+  gpu_voltage_control_start();
 #endif
 
 #if MALI_LICENSE_IS_GPL
