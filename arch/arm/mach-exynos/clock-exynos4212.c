@@ -973,11 +973,6 @@ static int exynos4212_epll_set_rate(struct clk *clk, unsigned long rate)
 }
 
 static struct vpll_div_data vpll_div_4212[] = {
-/*	Base clock from vpll source is 24000000Hz / 24MHz
-
-	rate = (base * mdiv + k) / (pdiv << sdiv)
-
-	{rate, pdiv, mdiv, sdiv, k, mfr, mrr, vsel} */
 	{54000000, 2, 72, 4, 0, 0, 0, 0},
 	{108000000, 2, 72, 3, 0, 0, 0, 0},
 	{160000000, 3, 160, 3, 0, 0, 0, 0},
@@ -989,7 +984,6 @@ static struct vpll_div_data vpll_div_4212[] = {
 	{350000000, 3, 175, 2, 0, 0, 0, 0},
 	{400000000, 3, 100, 1, 0, 0, 0, 0},
 	{440000000, 3, 110, 1, 0, 0, 0, 0},
-	{500000000, 2, 166, 2, 0, 0, 0, 0},
 	{533000000, 3, 133, 1, 16384, 0, 0, 0},
 	{600000000, 2, 100, 1, 0, 0, 0, 0},
 	{640000000, 3, 160, 1, 0, 0, 0, 0},
@@ -998,6 +992,7 @@ static struct vpll_div_data vpll_div_4212[] = {
 	{733000000, 2, 122, 1, 0, 0, 0, 0},
 	{750000000, 2, 125, 1, 0, 0, 0, 0},
 	{800000000, 2, 133, 1, 0, 0, 0, 0},
+
 };
 
 static unsigned long exynos4212_vpll_get_rate(struct clk *clk)

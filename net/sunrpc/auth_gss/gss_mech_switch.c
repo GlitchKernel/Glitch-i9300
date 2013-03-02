@@ -379,3 +379,4 @@ gss_delete_sec_context(struct gss_ctx	**context_handle)
 	*context_handle=NULL;
 	return GSS_S_COMPLETE;
 }
+

@@ -700,7 +700,8 @@ static int max77693_get_cable_type(struct max77693_charger_data *chg_data)
 	u8 mu_st2, chgdetrun, vbvolt, chgtyp, dxovp;
 	int muic_cb_typ;
 	bool wc_state;
-	bool retry_det, chg_det_erred;
+	bool retry_det;
+	bool chg_det_erred = false; /* TEMP: set as true for logging */
 	bool otg_detected = false;
 	int retry_cnt = 0;
 	pr_debug("%s\n", __func__);
@@ -758,7 +759,6 @@ static int max77693_get_cable_type(struct max77693_charger_data *chg_data)
 		goto chg_det_finish;
 	}
 
-	chg_det_erred = false;	/* TEMP: set as true for logging */
 	do {
 		retry_det = false;
 
@@ -1331,7 +1331,11 @@ static void max77693_softreg_work(struct work_struct *work)
 
 	if ((in_curr > SW_REG_CURR_STEP_MA) && (chg_dtls != 0x8) &&
 		((byp_dtls & MAX77693_BYP_DTLS3) ||
-		((chgin_dtls != 0x3) && (vbvolt == 0x1)))) {
+		((chgin_dtls != 0x3) && (vbvolt == 0x1)))
+#ifdef CONFIG_BATTERY_MAX77693_CHARGER_CONTROL
+		&& !charge_control_is_flag(CHRG_CTRL_IGNORE_UNSTABLE)
+#endif
+		) {
 		pr_info("%s: unstable power\n", __func__);
 
 		/* set soft regulation progress */
@@ -1363,7 +1367,11 @@ static void max77693_softreg_work(struct work_struct *work)
 		}
 
 		/* for margin */
-		if (chg_data->soft_reg_ing == true) {
+		if (chg_data->soft_reg_ing == true
+#ifdef CONFIG_BATTERY_MAX77693_CHARGER_CONTROL
+		     && !charge_control_is_flag(CHRG_CTRL_IGNORE_MARGIN)
+#endif
+		   ) {
 			pr_info("%s: stable power, reduce 1 more step "
 						"for margin\n", __func__);
 			max77693_reduce_input(chg_data, SW_REG_CURR_STEP_MA);
@@ -1616,7 +1624,11 @@ static irqreturn_t max77693_charger_irq(int irq, void *data)
 
 #if defined(USE_CHGIN_INTR)
 	if (((chgin_dtls == 0x0) || (chgin_dtls == 0x1)) &&
-			(vbvolt == 0x1) && (chg_dtls != 0x8)) {
+			(vbvolt == 0x1) && (chg_dtls != 0x8)
+#ifdef CONFIG_BATTERY_MAX77693_CHARGER_CONTROL
+		&& !charge_control_is_flag(CHRG_CTRL_IGNORE_UNSTABLE)
+#endif
+		) {
 		pr_info("%s: abnormal power state: chgin(%d), vb(%d), chg(%d)\n",
 					__func__, chgin_dtls, vbvolt, chg_dtls);
 
@@ -1812,6 +1824,9 @@ static __devinit int max77693_charger_probe(struct platform_device *pdev)
 
 	platform_set_drvdata(pdev, chg_data);
 	chg_data->max77693 = max77693;
+#ifdef CONFIG_BATTERY_MAX77693_CHARGER_CONTROL
+	charger_control_set_charger(max77693);
+#endif
 
 	mutex_init(&chg_data->irq_lock);
 	mutex_init(&chg_data->ops_lock);

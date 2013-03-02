@@ -44,7 +44,7 @@
 #include <linux/power/max8922_charger_u1.h>
 #endif
 
-#ifdef CONFIG_BT_BCM4334
+#if defined(CONFIG_BT_BCM4334) && !defined(MACH_T0_USA_VZW) && !defined(MACH_T0_USA_SPR)
 #include <mach/board-bluetooth-bcm.h>
 #endif
 
@@ -193,7 +193,7 @@ static struct s3c2410_uartcfg smdk4212_uartcfgs[] __initdata = {
 		.ucon		= SMDK4212_UCON_DEFAULT,
 		.ulcon		= SMDK4212_ULCON_DEFAULT,
 		.ufcon		= SMDK4212_UFCON_DEFAULT,
-#ifdef CONFIG_BT_BCM4334
+#if defined(CONFIG_BT_BCM4334) && !defined(MACH_T0_USA_VZW) && !defined(MACH_T0_USA_SPR)
 		.wake_peer = bcm_bt_lpm_exit_lpm_locked,
 #endif
 	},
@@ -1540,14 +1540,16 @@ static struct samsung_battery_platform_data samsung_battery_pdata = {
 	.chg_curr_siop_lv3 = 475,
 #endif
 
-	.chg_curr_usb = 800,
+	.chg_curr_usb = 475,
+	.in_curr_usb = 475,
 	.chg_curr_cdp = 1000,
+	.in_curr_cdp = 1000,
 #if defined(CONFIG_MACH_T0_USA_VZW)
-	.chg_curr_wpc = 800,
+	.chg_curr_wpc = 650,
 #else
-	.chg_curr_wpc = 800,
+	.chg_curr_wpc = 475,
 #endif
-	.chg_curr_etc = 800,
+	.chg_curr_etc = 475,
 
 	.chng_interval = 30,
 	.chng_susp_interval = 60,

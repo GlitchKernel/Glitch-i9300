@@ -4,8 +4,8 @@
 repo=~/android/system
 
 # Choose Android 4.1.x or 4.2.x initrd :
-initrd="4.1"
-#initrd="4.2"
+#initrd="4.1"
+initrd="4.2"
 
 # Glitch kernel build-script parameters :
 #
@@ -104,13 +104,17 @@ echo "packaging it up"
 
 cd release/bootimg$init && {
 
-mkdir -p $KERNEL_DIR/release/Flashable-i9300
+mkdir -p $KERNEL_DIR/release/Flashable-i9300-$init
 
+if [ $init = "4.1" ] ; then
 REL=CM10-i9300-Glitch-$(date +%Y%m%d.%H%M).zip
+else
+REL=CM10.1-i9300-Glitch-$(date +%Y%m%d.%H%M).zip
+fi
 
 	zip -q -r ${REL} system boot.img META-INF
 	sha256sum ${REL} > ${REL}.sha256sum
-	mv ${REL}* $KERNEL_DIR/release/Flashable-i9300/
+	mv ${REL}* $KERNEL_DIR/release/Flashable-i9300-$init/
 
 rm boot.img
 rm -r system

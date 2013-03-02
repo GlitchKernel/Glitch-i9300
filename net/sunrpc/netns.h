@@ -17,3 +17,4 @@ int ip_map_cache_create(struct net *);
 void ip_map_cache_destroy(struct net *);
 
 #endif
+
