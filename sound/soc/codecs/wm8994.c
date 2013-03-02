@@ -193,12 +193,16 @@ static int wm8994_volatile(struct snd_soc_codec *codec, unsigned int reg)
 	}
 }
 
+#include "boeffla_sound.h"
+
 static int wm8994_write(struct snd_soc_codec *codec, unsigned int reg,
 	unsigned int value)
 {
 	int ret;
 
 	BUG_ON(reg > WM8994_MAX_REGISTER);
+
+	value = Boeffla_sound_hook_wm8994_write(reg, value);
 
 	if (!wm8994_volatile(codec, reg)) {
 		ret = snd_soc_cache_write(codec, reg, value);
@@ -4213,6 +4217,10 @@ static int wm8994_codec_probe(struct snd_soc_codec *codec)
 					ARRAY_SIZE(wm8958_intercon));
 		break;
 	}
+
+#ifdef CONFIG_SND_BOEFFLA
+	Boeffla_sound_hook_wm8994_pcm_probe(codec);
+#endif
 
 	return 0;
 
