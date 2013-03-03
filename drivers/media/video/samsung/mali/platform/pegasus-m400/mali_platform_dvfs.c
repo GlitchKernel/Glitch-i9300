@@ -69,15 +69,15 @@ typedef struct mali_dvfs_stepTag{
 }mali_dvfs_step;
 
 mali_dvfs_step step[MALI_DVFS_STEPS]={
-	/*step 0 clk*/ {160,   775000},
+	/*step 0 clk*/ {160,   875000},
 #if (MALI_DVFS_STEPS > 1)
-	/*step 1 clk*/ {266,   850000},
+	/*step 1 clk*/ {266,   900000},
 #if (MALI_DVFS_STEPS > 2)
-	/*step 2 clk*/ {440,   950000},
+	/*step 2 clk*/ {350,   950000},
 #if (MALI_DVFS_STEPS > 3)
-	/*step 3 clk*/ {533,  1025000},
+	/*step 3 clk*/ {440,  1025000},
 #if (MALI_DVFS_STEPS > 4)
-	/*step 4 clk*/ {700,  1150000}
+	/*step 4 clk*/ {700,  1100000}
 #endif
 #endif
 #endif
@@ -108,49 +108,49 @@ mali_dvfs_staycount_table mali_dvfs_staycount[MALI_DVFS_STEPS]={
 // L4 = 160Mhz, 0.875V
 
 int step0_clk = 160;
-int step0_vol = 775000;
+int step0_vol = 875000;
 #if (MALI_DVFS_STEPS > 1)
 int step1_clk = 266;
-int step1_vol = 850000;
+int step1_vol = 900000;
 int step0_up = 70;
 int step1_down = 62;
 #if (MALI_DVFS_STEPS > 2)
-int step2_clk = 440;
+int step2_clk = 350;
 int step2_vol = 950000;
 int step1_up = 80;
 int step2_down = 70;
 #if (MALI_DVFS_STEPS > 3)
-int step3_clk = 533;
+int step3_clk = 440;
 int step3_vol = 1025000;
-int step2_up = 70;
-int step3_down = 50;
+int step2_up = 80;
+int step3_down = 65;
 #if (MALI_DVFS_STEPS > 4)
 int step4_clk = 700;
-int step4_vol = 1150000;
-int step3_up = 50;
-int step4_down = 30;
+int step4_vol = 1100000;
+int step3_up = 70;
+int step4_down = 50;
 #endif
 #endif
 #endif
 #endif
 
 mali_dvfs_table mali_dvfs_all[MAX_MALI_DVFS_STEPS]={
-	{160   ,1000000   ,  775000},
-	{266   ,1000000   ,  850000},
-	{440   ,1000000   ,  950000},
-	{533   ,1000000   , 1025000},
-	{700   ,1000000   , 1150000} };
+	{160   ,1000000   ,  875000},
+	{266   ,1000000   ,  900000},
+	{350   ,1000000   ,  950000},
+	{440   ,1000000   , 1025000},
+	{700   ,1000000   , 1100000} };
 
 mali_dvfs_table mali_dvfs[MALI_DVFS_STEPS]={
-	{160   ,1000000   , 775000},
+	{160   ,1000000   , 875000},
 #if (MALI_DVFS_STEPS > 1)
-	{266   ,1000000   , 850000},
+	{266   ,1000000   , 900000},
 #if (MALI_DVFS_STEPS > 2)
-	{440   ,1000000   , 950000},
+	{350   ,1000000   , 950000},
 #if (MALI_DVFS_STEPS > 3)
-	{533   ,1000000   ,1025000},
+	{440   ,1000000   ,1025000},
 #if (MALI_DVFS_STEPS > 4)
-	{700   ,1000000   ,1150000}
+	{700   ,1000000   ,1100000}
 #endif
 #endif
 #endif
@@ -162,11 +162,11 @@ mali_dvfs_threshold_table mali_dvfs_threshold[MALI_DVFS_STEPS]={
 #if (MALI_DVFS_STEPS > 1)
 	{62  , 80},
 #if (MALI_DVFS_STEPS > 2)
-	{70  , 70},
+	{70  , 80},
 #if (MALI_DVFS_STEPS > 3)
-	{50  ,50},
+	{65  ,70},
 #if (MALI_DVFS_STEPS > 4)
-	{30  ,100}
+	{50  ,100}
 #endif
 #endif
 #endif
@@ -438,7 +438,7 @@ static unsigned int decideNextStatus(unsigned int utilization)
 
 	if (!mali_dvfs_control && level == maliDvfsStatus.currentStep) {
 		if (utilization > (int)(255 * mali_dvfs_threshold[maliDvfsStatus.currentStep].upthreshold / 100) &&
-				level < MALI_DVFS_STEPS - 2) {
+				level < MALI_DVFS_STEPS - 1) {
 			level++;
 			if ((samsung_rev() < EXYNOS4412_REV_2_0) && (maliDvfsStatus.currentStep == 3)) {
 				level=get_mali_dvfs_status();
