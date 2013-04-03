@@ -58,7 +58,7 @@ build ()
 {
 
     local target=i9300
-    echo "Building for i9300"
+    echo "Building for i9300 - Android $init.x"
     local target_dir="$BUILD_DIR/i9300"
     local module
     rm -fr "$target_dir"
